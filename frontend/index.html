@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RivalWatch AI</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">◉</div>
+
+            <div>
+                <h2>RivalWatch</h2>
+                <span>AI Intelligence</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <button class="nav-item active" data-page="dashboard">
+                ⌂ Dashboard
+            </button>
+
+            <button class="nav-item" data-page="products">
+                ◈ Products
+            </button>
+
+            <button class="nav-item" data-page="changes">
+                ↻ Change History
+            </button>
+
+            <button class="nav-item" data-page="health">
+                ♥ Scraper Health
+            </button>
+
+            <button class="nav-item" data-page="healing">
+                ✦ Healing Activity
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                System Online
+            </div>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div>
+                <h1 id="page-title">Dashboard</h1>
+                <p>Monitor your competitors. Detect changes. Recover automatically.</p>
+            </div>
+
+            <button class="scrape-btn" id="scrapeBtn">
+                ↻ Run Scraper
+            </button>
+
+        </header>
+
+
+        <!-- DASHBOARD PAGE -->
+
+        <section class="page active-page" id="dashboard">
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span class="stat-label">MONITORED PRODUCTS</span>
+                    <h2 id="productCount">20</h2>
+                    <p>Across competitor sources</p>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">CHANGES DETECTED</span>
+                    <h2 id="changeCount">3</h2>
+                    <p>Since last scan</p>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">SCRAPER HEALTH</span>
+                    <h2 class="healthy">100%</h2>
+                    <p>Extraction successful</p>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">LAST SCAN</span>
+                    <h2>Just now</h2>
+                    <p>IKEA India</p>
+                </div>
+
+            </div>
+
+
+            <div class="content-grid">
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2>Recent Changes</h2>
+                            <p>Detected competitor activity</p>
+                        </div>
+
+                        <button class="small-btn" data-page-link="changes">
+                            View all →
+                        </button>
+                    </div>
+
+                    <div id="recentChanges"></div>
+
+                </div>
+
+
+                <div class="panel health-panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <h2>Scraper Health</h2>
+                            <p>Live extraction monitoring</p>
+                        </div>
+                    </div>
+
+                    <div class="health-main">
+
+                        <div class="health-circle">
+                            <span>100%</span>
+                        </div>
+
+                        <div>
+                            <h3>All Systems Operational</h3>
+                            <p>Custom Bright Data scraper is extracting product data successfully.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="health-details">
+
+                        <div>
+                            <span>Products</span>
+                            <strong>20</strong>
+                        </div>
+
+                        <div>
+                            <span>Required Fields</span>
+                            <strong>6 / 6</strong>
+                        </div>
+
+                        <div>
+                            <span>Status</span>
+                            <strong class="healthy">Healthy</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PRODUCTS PAGE -->
+
+        <section class="page" id="products">
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Competitor Products</h2>
+                        <p>Data extracted from IKEA India</p>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Rating</th>
+                                <th>Currency</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="productsTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CHANGES PAGE -->
+
+        <section class="page" id="changes">
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <h2>Change History</h2>
+                        <p>Business changes detected between scraper runs</p>
+                    </div>
+
+                </div>
+
+                <div id="changesList"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- HEALTH PAGE -->
+
+        <section class="page" id="health">
+
+            <div class="health-page-grid">
+
+                <div class="panel large-health">
+
+                    <span class="status-badge healthy-badge">
+                        ● HEALTHY
+                    </span>
+
+                    <h2>Scraper Operating Normally</h2>
+
+                    <p>
+                        RivalWatch successfully extracted structured data
+                        from the competitor website.
+                    </p>
+
+                    <div class="field-checks">
+
+                        <div>✓ Product ID</div>
+                        <div>✓ Product Name</div>
+                        <div>✓ Price</div>
+                        <div>✓ Currency</div>
+                        <div>✓ Rating</div>
+                        <div>✓ Product URL</div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <h2>Latest Scraper Run</h2>
+
+                    <div class="run-info">
+
+                        <div>
+                            <span>Status</span>
+                            <strong class="healthy">Successful</strong>
+                        </div>
+
+                        <div>
+                            <span>Products Found</span>
+                            <strong>20</strong>
+                        </div>
+
+                        <div>
+                            <span>Source</span>
+                            <strong>IKEA India</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- HEALING PAGE -->
+
+        <section class="page" id="healing">
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <h2>Self-Healing Activity</h2>
+                        <p>Automatic recovery from extraction failures</p>
+                    </div>
+
+                </div>
+
+                <div class="healing-info">
+
+                    <div class="healing-icon">✦</div>
+
+                    <div>
+
+                        <h2>Self-Healing Ready</h2>
+
+                        <p>
+                            If a required field disappears from a successful
+                            product extraction, RivalWatch classifies it as a
+                            possible structural change rather than a business
+                            data change.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="timeline">
+
+                    <div class="timeline-item">
+                        <span>1</span>
+                        <div>
+                            <h3>Validate</h3>
+                            <p>Check required product fields.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span>2</span>
+                        <div>
+                            <h3>Detect Failure</h3>
+                            <p>Identify missing or invalid extraction data.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span>3</span>
+                        <div>
+                            <h3>Trigger Recovery</h3>
+                            <p>Initiate scraper repair workflow.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span>4</span>
+                        <div>
+                            <h3>Re-run & Validate</h3>
+                            <p>Confirm structured data is recovered.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>
