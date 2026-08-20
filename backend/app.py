@@ -3,38 +3,76 @@ from flask_cors import CORS
 from database import get_connection, create_tables
 from datetime import datetime
 
+import os
+import time
+import requests
+from dotenv import load_dotenv
+
+
+# ==========================================
+# CONFIGURATION
+# ==========================================
+
+load_dotenv()
+
 app = Flask(__name__)
 CORS(app)
 
 create_tables()
 
+BRIGHT_DATA_API_TOKEN = os.getenv(
+    "BRIGHT_DATA_API_TOKEN"
+)
 
-# =========================================================
+BRIGHT_DATA_COLLECTOR_ID = (
+    "c_mt1lrdw314u6wqb0op"
+)
+
+BRIGHT_DATA_TARGET_URL = (
+    "https://www.ikea.com/in/en/cat/tables-chairs-fu002/"
+)
+
+BRIGHT_DATA_API_TOKEN = os.getenv(
+    "BRIGHT_DATA_API_TOKEN"
+)
+
+BRIGHT_DATA_COLLECTOR_ID = (
+    "c_mt1lrdw314u6wqb0op"
+)
+
+BRIGHT_DATA_TARGET_URL = (
+    "https://www.ikea.com/in/en/cat/tables-chairs-fu002/"
+)
+
+
+# ==========================================
 # HOME
-# =========================================================
+# ==========================================
 
 @app.route("/")
 def home():
+
     return jsonify({
         "project": "RivalWatch AI",
         "status": "running"
     })
 
 
-# =========================================================
+# ==========================================
 # HEALTH
-# =========================================================
+# ==========================================
 
 @app.route("/health")
 def health():
+
     return jsonify({
         "status": "healthy"
     })
 
 
-# =========================================================
+# ==========================================
 # DASHBOARD
-# =========================================================
+# ==========================================
 
 @app.route("/api/dashboard")
 def dashboard():
@@ -42,22 +80,27 @@ def dashboard():
     connection = get_connection()
     cursor = connection.cursor()
 
-    # Count products
-    cursor.execute("SELECT COUNT(*) FROM products")
+    cursor.execute(
+        "SELECT COUNT(*) FROM products"
+    )
+
     product_count = cursor.fetchone()[0]
 
-    # Count changes
-    cursor.execute("SELECT COUNT(*) FROM changes")
+    cursor.execute(
+        "SELECT COUNT(*) FROM changes"
+    )
+
     change_count = cursor.fetchone()[0]
 
     # Recent changes
     cursor.execute("""
-        SELECT product_id,
-               change_type,
-               old_value,
-               new_value,
-               percentage,
-               detected_at
+        SELECT
+            product_id,
+            change_type,
+            old_value,
+            new_value,
+            percentage,
+            detected_at
         FROM changes
         ORDER BY id DESC
         LIMIT 5
@@ -68,6 +111,7 @@ def dashboard():
     recent_changes = []
 
     for row in rows:
+
         recent_changes.append({
             "product_id": row[0],
             "change_type": row[1],
@@ -86,9 +130,9 @@ def dashboard():
     })
 
 
-# =========================================================
+# ==========================================
 # PRODUCTS
-# =========================================================
+# ==========================================
 
 @app.route("/api/products")
 def products():
@@ -97,15 +141,16 @@ def products():
     cursor = connection.cursor()
 
     cursor.execute("""
-        SELECT product_id,
-               name,
-               description,
-               price,
-               currency,
-               rating,
-               reviews,
-               url,
-               scraped_at
+        SELECT
+            product_id,
+            name,
+            description,
+            price,
+            currency,
+            rating,
+            reviews,
+            url,
+            scraped_at
         FROM products
         ORDER BY id DESC
     """)
@@ -115,6 +160,7 @@ def products():
     result = []
 
     for row in rows:
+
         result.append({
             "product_id": row[0],
             "name": row[1],
@@ -132,9 +178,9 @@ def products():
     return jsonify(result)
 
 
-# =========================================================
+# ==========================================
 # CHANGES
-# =========================================================
+# ==========================================
 
 @app.route("/api/changes")
 def changes():
@@ -143,12 +189,13 @@ def changes():
     cursor = connection.cursor()
 
     cursor.execute("""
-        SELECT product_id,
-               change_type,
-               old_value,
-               new_value,
-               percentage,
-               detected_at
+        SELECT
+            product_id,
+            change_type,
+            old_value,
+            new_value,
+            percentage,
+            detected_at
         FROM changes
         ORDER BY id DESC
     """)
@@ -158,6 +205,7 @@ def changes():
     result = []
 
     for row in rows:
+
         result.append({
             "product_id": row[0],
             "change_type": row[1],
@@ -172,9 +220,9 @@ def changes():
     return jsonify(result)
 
 
-# =========================================================
-# SAVE PRODUCTS + DETECT CHANGES
-# =========================================================
+# ==========================================
+# SAVE SCRAPED PRODUCTS
+# ==========================================
 
 def save_products(scraped_products):
 
@@ -185,14 +233,18 @@ def save_products(scraped_products):
 
     for product in scraped_products:
 
-        product_id = product["product_id"]
+        product_id = product.get("product_id")
+
+        if not product_id:
+            continue
 
         # Get previous version of product
         cursor.execute("""
-            SELECT price,
-                   rating,
-                   name,
-                   description
+            SELECT
+                price,
+                rating,
+                name,
+                description
             FROM products
             WHERE product_id = ?
         """, (product_id,))
@@ -201,9 +253,9 @@ def save_products(scraped_products):
 
         now = datetime.now().isoformat()
 
-        # =================================================
+        # ==========================================
         # NEW PRODUCT
-        # =================================================
+        # ==========================================
 
         if old_product is None:
 
@@ -222,8 +274,8 @@ def save_products(scraped_products):
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                product["product_id"],
-                product["name"],
+                product_id,
+                product.get("name"),
                 product.get("description"),
                 product.get("price"),
                 product.get("currency"),
@@ -249,62 +301,21 @@ def save_products(scraped_products):
         new_name = product.get("name")
         new_description = product.get("description")
 
-        # =================================================
-        # STRUCTURAL CHANGE
-        # =================================================
-
-        missing_fields = []
-
-        if not product.get("product_id"):
-            missing_fields.append("product_id")
-
-        if not product.get("name"):
-            missing_fields.append("name")
-
-        if product.get("price") is None:
-            missing_fields.append("price")
-
-        if not product.get("url"):
-            missing_fields.append("url")
-
-        if missing_fields:
-
-            cursor.execute("""
-                INSERT INTO changes
-                (
-                    product_id,
-                    change_type,
-                    old_value,
-                    new_value,
-                    percentage,
-                    detected_at
-                )
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (
-                product_id,
-                "STRUCTURAL_CHANGE",
-                "Required fields present",
-                "Missing: " + ", ".join(missing_fields),
-                None,
-                now
-            ))
-
-            changes_detected += 1
-
-            # Don't overwrite valid old data
-            continue
-
-        # =================================================
+        # ==========================================
         # PRICE CHANGE
-        # =================================================
+        # ==========================================
 
         if old_price != new_price:
 
             percentage = None
 
             if old_price and new_price:
+
                 percentage = round(
-                    ((new_price - old_price) / old_price) * 100,
+                    (
+                        (new_price - old_price)
+                        / old_price
+                    ) * 100,
                     2
                 )
 
@@ -330,9 +341,9 @@ def save_products(scraped_products):
 
             changes_detected += 1
 
-        # =================================================
+        # ==========================================
         # RATING CHANGE
-        # =================================================
+        # ==========================================
 
         if old_rating != new_rating:
 
@@ -358,11 +369,14 @@ def save_products(scraped_products):
 
             changes_detected += 1
 
-        # =================================================
+        # ==========================================
         # CONTENT CHANGE
-        # =================================================
+        # ==========================================
 
-        if old_name != new_name or old_description != new_description:
+        if (
+            old_name != new_name
+            or old_description != new_description
+        ):
 
             cursor.execute("""
                 INSERT INTO changes
@@ -386,9 +400,9 @@ def save_products(scraped_products):
 
             changes_detected += 1
 
-        # =================================================
+        # ==========================================
         # UPDATE PRODUCT
-        # =================================================
+        # ==========================================
 
         cursor.execute("""
             UPDATE products
@@ -420,118 +434,382 @@ def save_products(scraped_products):
     return changes_detected
 
 
-# =========================================================
-# SCRAPER
-# =========================================================
+# ==========================================
+# BRIGHT DATA SCRAPER
+# ==========================================
 
 @app.route("/api/scrape", methods=["POST"])
 def run_scraper():
 
-    # =====================================================
-    # IKEA DATA
-    #
-    # This represents the structured data collected
-    # from the Bright Data IKEA scraper.
-    # =====================================================
+    if not BRIGHT_DATA_API_TOKEN:
 
-    scraped_products = [
+        return jsonify({
+            "success": False,
+            "error": (
+                "BRIGHT_DATA_API_TOKEN "
+                "is missing from .env"
+            )
+        }), 500
 
-        {
-            "product_id": "70369546",
-            "name": "NORDVIKEN",
-            "description": "Chair, black",
-            "price": 5990,
-            "currency": "INR",
-            "rating": 4.3,
-            "reviews": 517,
-            "url": "https://www.ikea.com/in/en/p/nordviken-chair-black-70369546/"
-        },
+    try:
 
-        {
-            "product_id": "90369550",
-            "name": "NORDVIKEN",
-            "description": "Chair, white",
-            "price": 5990,
-            "currency": "INR",
-            "rating": 4.3,
-            "reviews": 517,
-            "url": "https://www.ikea.com/in/en/p/nordviken-chair-white-90369550/"
-        },
+        # ==========================================
+        # 1. TRIGGER CUSTOM SCRAPER
+        # ==========================================
 
-        {
-            "product_id": "40559755",
-            "name": "GRÖNSTA",
-            "description": "Chair with armrests, in/outdoor, white",
-            "price": 6950,
-            "currency": "INR",
-            "rating": 4.6,
-            "reviews": 100,
-            "url": "https://www.ikea.com/in/en/p/groensta-chair-with-armrests-in-outdoor-white-40559755/"
-        },
+        trigger_url = (
+            "https://api.brightdata.com/dca/trigger"
+            f"?collector={BRIGHT_DATA_COLLECTOR_ID}"
+            "&queue_next=1"
+        )
 
-        {
-            "product_id": "60349672",
-            "name": "TOBIAS",
-            "description": "Chair, transparent/chrome-plated",
-            "price": 7950,
-            "currency": "INR",
-            "rating": 3.9,
-            "reviews": 200,
-            "url": "https://www.ikea.com/in/en/p/tobias-chair-transparent-chrome-plated-60349672/"
-        },
-
-        {
-            "product_id": "40603664",
-            "name": "MARIEDAMM",
-            "description": "Table, white marble effect, 180x100 cm",
-            "price": 39990,
-            "currency": "INR",
-            "rating": 4.7,
-            "reviews": 100,
-            "url": "https://www.ikea.com/in/en/p/mariedamm-table-white-marble-effect-40603664/"
+        headers = {
+            "Authorization": (
+                f"Bearer {BRIGHT_DATA_API_TOKEN}"
+            ),
+            "Content-Type": "application/json"
         }
 
-    ]
+        payload = [
+            {
+                "url": BRIGHT_DATA_TARGET_URL
+            }
+        ]
 
-    # Save products and detect changes
-    changes = save_products(scraped_products)
-
-    # =====================================================
-    # SAVE SCRAPER RUN
-    # =====================================================
-
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute("""
-        INSERT INTO scraper_runs
-        (
-            status,
-            products_found,
-            error,
-            timestamp
+        print(
+            "\nStarting Bright Data scraper..."
         )
-        VALUES (?, ?, ?, ?)
-    """, (
-        "successful",
-        len(scraped_products),
-        None,
-        datetime.now().isoformat()
-    ))
 
-    connection.commit()
-    connection.close()
+        response = requests.post(
+            trigger_url,
+            headers=headers,
+            json=payload,
+            timeout=60
+        )
 
-    return jsonify({
-        "success": True,
-        "products_found": len(scraped_products),
-        "changes_detected": changes
-    })
+        print(
+            "Bright Data trigger:",
+            response.status_code
+        )
+
+        print(
+            "Response:",
+            response.text
+        )
+
+        response.raise_for_status()
+
+        trigger_result = response.json()
+
+        collection_id = (
+            trigger_result.get("collection_id")
+        )
+
+        if not collection_id:
+
+            raise Exception(
+                "Bright Data did not return "
+                f"a collection_id: {trigger_result}"
+            )
+
+        print(
+            "Collection ID:",
+            collection_id
+        )
+
+        # ==========================================
+        # 2. WAIT FOR DATASET
+        # ==========================================
+
+        dataset_url = (
+            "https://api.brightdata.com/dca/dataset"
+            f"?id={collection_id}"
+        )
+
+        scraped_data = None
+
+        for attempt in range(36):
+
+            time.sleep(5)
+
+            result = requests.get(
+                dataset_url,
+                headers={
+                    "Authorization": (
+                        f"Bearer {BRIGHT_DATA_API_TOKEN}"
+                    )
+                },
+                timeout=60
+            )
+
+            print(
+                f"Bright Data attempt "
+                f"{attempt + 1}/36:",
+                result.status_code
+            )
+
+            # ------------------------------------------
+            # Dataset not ready
+            # ------------------------------------------
+
+            if result.status_code == 202:
+
+                print(
+                    "Dataset still processing:",
+                    result.text
+                )
+
+                continue
+
+            # ------------------------------------------
+            # Other error
+            # ------------------------------------------
+
+            if result.status_code != 200:
+
+                print(
+                    "Bright Data error:",
+                    result.text
+                )
+
+                continue
+
+            data = result.json()
+
+            # ==========================================
+            # COMPLETED RESULT
+            # ==========================================
+
+            if (
+                isinstance(data, dict)
+                and "products" in data
+            ):
+
+                scraped_data = data["products"]
+
+                break
+
+            # ==========================================
+            # DIRECT LIST RESULT
+            # ==========================================
+
+            if isinstance(data, list):
+
+                scraped_data = data
+
+                break
+
+            # ==========================================
+            # STATUS RESPONSE
+            # ==========================================
+
+            if isinstance(data, dict):
+
+                print(
+                    "Bright Data status:",
+                    data
+                )
+
+                if data.get("status") in [
+                    "failed",
+                    "error"
+                ]:
+
+                    raise Exception(
+                        f"Bright Data failed: {data}"
+                    )
+
+        # ==========================================
+        # TIMEOUT
+        # ==========================================
+
+        if scraped_data is None:
+
+            raise Exception(
+                "Bright Data did not return "
+                "a completed dataset within "
+                "the expected time."
+            )
+
+        # ==========================================
+        # CLEAN PRODUCTS
+        # ==========================================
+
+        scraped_products = []
+
+        for product in scraped_data:
+
+            if not isinstance(product, dict):
+                continue
+
+            product_id = product.get(
+                "product_id"
+            )
+
+            if not product_id:
+                continue
+
+            scraped_products.append({
+
+                "product_id": str(
+                    product_id
+                ),
+
+                "name": product.get(
+                    "name",
+                    ""
+                ),
+
+                "description": product.get(
+                    "description"
+                ),
+
+                "price": product.get(
+                    "price"
+                ),
+
+                "currency": product.get(
+                    "currency",
+                    "INR"
+                ),
+
+                "rating": product.get(
+                    "rating"
+                ),
+
+                "reviews": product.get(
+                    "reviews"
+                ),
+
+                "url": product.get(
+                    "url"
+                ),
+
+                "availability": product.get(
+                    "availability"
+                )
+            })
+
+        # ==========================================
+        # NO PRODUCTS
+        # ==========================================
+
+        if not scraped_products:
+
+            raise Exception(
+                "Bright Data returned "
+                "zero valid products."
+            )
+
+        print(
+            "Products received:",
+            len(scraped_products)
+        )
+
+        # ==========================================
+        # SAVE + DETECT CHANGES
+        # ==========================================
+
+        changes = save_products(
+            scraped_products
+        )
+
+        # ==========================================
+        # SAVE SUCCESSFUL RUN
+        # ==========================================
+
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO scraper_runs
+            (
+                status,
+                products_found,
+                error,
+                timestamp
+            )
+            VALUES (?, ?, ?, ?)
+        """, (
+            "successful",
+            len(scraped_products),
+            None,
+            datetime.now().isoformat()
+        ))
+
+        connection.commit()
+        connection.close()
+
+        # ==========================================
+        # RETURN RESULT
+        # ==========================================
+
+        return jsonify({
+
+            "success": True,
+
+            "products_found": len(
+                scraped_products
+            ),
+
+            "changes_detected": changes,
+
+            "collector_id": (
+                BRIGHT_DATA_COLLECTOR_ID
+            ),
+
+            "collection_id": collection_id
+        })
+
+    except Exception as error:
+
+        print(
+            "\nSCRAPER ERROR:",
+            str(error)
+        )
+
+        # ==========================================
+        # SAVE FAILED RUN
+        # ==========================================
+
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO scraper_runs
+            (
+                status,
+                products_found,
+                error,
+                timestamp
+            )
+            VALUES (?, ?, ?, ?)
+        """, (
+            "failed",
+            0,
+            str(error),
+            datetime.now().isoformat()
+        ))
+
+        connection.commit()
+        connection.close()
+
+        return jsonify({
+
+            "success": False,
+
+            "products_found": 0,
+
+            "changes_detected": 0,
+
+            "error": str(error)
+
+        }), 500
 
 
-# =========================================================
+# ==========================================
 # SCRAPER HEALTH
-# =========================================================
+# ==========================================
 
 @app.route("/api/scraper-health")
 def scraper_health():
@@ -540,10 +818,11 @@ def scraper_health():
     cursor = connection.cursor()
 
     cursor.execute("""
-        SELECT status,
-               products_found,
-               error,
-               timestamp
+        SELECT
+            status,
+            products_found,
+            error,
+            timestamp
         FROM scraper_runs
         ORDER BY id DESC
         LIMIT 1
@@ -563,18 +842,23 @@ def scraper_health():
         })
 
     return jsonify({
+
         "status": row[0],
+
         "products_found": row[1],
+
         "error": row[2],
+
         "timestamp": row[3]
     })
 
 
-# =========================================================
-# START SERVER
-# =========================================================
+# ==========================================
+# START
+# ==========================================
 
 if __name__ == "__main__":
+
 
     app.run(
         debug=True,

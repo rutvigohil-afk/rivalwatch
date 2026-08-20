@@ -1,0 +1,156 @@
+[
+  {
+    "product_id": "30576034",
+    "name": "HÄGERNÄS",
+    "description": "Table and 4 chairs, black stained pine",
+    "price": 24990,
+    "currency": "INR",
+    "rating": 4.6,
+    "reviews": 465,
+    "url": "https://www.ikea.com/in/en/p/haegernaes-table-and-4-chairs-black-stained-pine-30576034/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s59575114",
+    "name": "HAUGA / HAUGA",
+    "description": "Table and 4 chairs, white/white, 118x74 cm (46 1/2x29 1/8 \")",
+    "price": 28790,
+    "currency": "INR",
+    "rating": 4.3,
+    "reviews": 7,
+    "url": "https://www.ikea.com/in/en/p/hauga-hauga-table-and-4-chairs-white-white-s59575114/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s89608801",
+    "name": "SANDSBERG",
+    "description": "Table and 4 chairs, black black/white, 110x67 cm (43 1/4x26 3/8 \")",
+    "price": 8390,
+    "currency": "INR",
+    "rating": 4.4,
+    "reviews": 30,
+    "url": "https://www.ikea.com/in/en/p/sandsberg-table-and-4-chairs-black-black-white-s89608801/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s09564603",
+    "name": "GUNDE / GUNDE",
+    "description": "Table and 2 folding chairs, folding black/black, 67x67 cm (26 3/8x26 3/8 \")",
+    "price": 4890,
+    "currency": "INR",
+    "rating": 4.5,
+    "reviews": 31,
+    "url": "https://www.ikea.com/in/en/p/gunde-gunde-table-and-2-folding-chairs-folding-black-black-s09564603/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s49599506",
+    "name": "VIHALS / VIHALS",
+    "description": "Table and 4 chairs, white/white Tibbleby beige-grey, 120/180x74 cm (47 1/4/70 7/8x29 1/8 \")",
+    "price": 28790,
+    "currency": "INR",
+    "rating": 4.3,
+    "reviews": 3,
+    "url": "https://www.ikea.com/in/en/p/vihals-vihals-table-and-4-chairs-white-white-tibbleby-beige-grey-s49599506/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s69599510",
+    "name": "VIHALS / VIHALS",
+    "description": "Table and 4 chairs, white/white, 120/180x74 cm (47 1/4/70 7/8x29 1/8 \")",
+    "price": 22790,
+    "currency": "INR",
+    "rating": 4.3,
+    "reviews": 3,
+    "url": "https://www.ikea.com/in/en/p/vihals-vihals-table-and-4-chairs-white-white-s69599510/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s69568900",
+    "name": "NORDEN / FRÖSVI",
+    "description": "Table and 4 chairs, birch/beech, 26/89/152 cm (10 1/4/35/59 7/8 \")",
+    "price": 42790,
+    "currency": "INR",
+    "rating": 5,
+    "reviews": 3,
+    "url": "https://www.ikea.com/in/en/p/norden-froesvi-table-and-4-chairs-birch-beech-s69568900/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s09602346",
+    "name": "Näsinge / Näsinge",
+    "description": "Table and 2 chairs, gateleg table dark brown stained beech veneer/dark brown stained Kilanda light beige, 48/104/159x85 cm (18 7/8/41/62 5/8x33 1/2 \")",
+    "price": 38890,
+    "currency": "INR",
+    "rating": 3.8,
+    "reviews": 4,
+    "url": "https://www.ikea.com/in/en/p/naesinge-naesinge-table-and-2-chairs-gateleg-table-dark-brown-stained-beech-veneer-dark-brown-stained-kilanda-light-beige-s09602346/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s99599486",
+    "name": "VIHALS / VIHALS",
+    "description": "Table and 4 chairs, gateleg table white/folding white, 39/95/151x90 cm (15 3/8/37 3/8/59 1/2x35 3/8 \")",
+    "price": 30790,
+    "currency": "INR",
+    "rating": 4.7,
+    "reviews": 7,
+    "url": "https://www.ikea.com/in/en/p/vihals-vihals-table-and-4-chairs-gateleg-table-white-folding-white-s99599486/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s59568892",
+    "name": "NORDEN / KYRRE",
+    "description": "Table and 4 stools, birch/birch, 26/89/152 cm (10 1/4/35/59 7/8 \")",
+    "price": 34950,
+    "currency": "INR",
+    "rating": 5,
+    "reviews": 3,
+    "url": "https://www.ikea.com/in/en/p/norden-kyrre-table-and-4-stools-birch-birch-s59568892/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s69599421",
+    "name": "VIHALS / VIHALS",
+    "description": "Table and 2 folding chairs, gateleg table white/red, 39/95/151x90 cm (15 3/8/37 3/8/59 1/2x35 3/8 \")",
+    "price": 26890,
+    "currency": "INR",
+    "rating": 4.5,
+    "reviews": 11,
+    "url": "https://www.ikea.com/in/en/p/vihals-vihals-table-and-2-folding-chairs-gateleg-table-white-red-s69599421/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "70422394",
+    "name": "NORDEN",
+    "description": "Gateleg table, white, 26/89/152x80 cm (10 1/4/35/59 7/8x31 1/2 \")",
+    "price": 24990,
+    "currency": "INR",
+    "rating": 4.6,
+    "reviews": 2421,
+    "url": "https://www.ikea.com/in/en/p/norden-gateleg-table-white-70422394/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "s59568825",
+    "name": "NORDEN / TEODORES",
+    "description": "Table and 4 chairs, white/white, 26/89/152 cm (10 1/4/35/59 7/8 \")",
+    "price": 36790,
+    "currency": "INR",
+    "rating": 4.5,
+    "reviews": 2,
+    "url": "https://www.ikea.com/in/en/p/norden-teodores-table-and-4-chairs-white-white-s59568825/",
+    "availability": "Available"
+  },
+  {
+    "product_id": "90529469",
+    "name": "PINNTORP",
+    "description": "Gateleg table, light brown stained/white stained pine, 67/124x75 cm (26 3/8/48 7/8x29 1/2 \")",
+    "price": 18990,
+    "currency": "INR",
+    "rating": 4.6,
+    "reviews": 284,
+    "url": "https://www.ikea.com/in/en/p/pinntorp-gateleg-table-light-brown-stained-white-stained-pine-90529469/",
+    "availability": "Available"
+  }
+]
